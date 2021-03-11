@@ -357,6 +357,9 @@ class Client extends Base {
             }
           });
         }
+        if (!result) {
+          result = obj.Body
+        }
         debug('client response. result: %j body: %j obj.Header: %j', result, body, obj.Header);
 
         callback(null, result, body, obj.Header);
