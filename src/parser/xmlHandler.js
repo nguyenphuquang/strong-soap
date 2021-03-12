@@ -21,6 +21,8 @@ var NamespaceContext = require('./nscontext');
 
 /// quang's
 var dateFns = require('date-fns');
+var xsd = require('./xsd');
+// quang's
 
 
 class XMLHandler {
