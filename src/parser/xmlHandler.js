@@ -19,6 +19,9 @@ var QName = require('./qname');
 var helper = require('./helper');
 var NamespaceContext = require('./nscontext');
 
+/// quang's
+var dateFns = require('date-fns');
+
 
 class XMLHandler {
   constructor(schemas, options) {
@@ -562,6 +565,13 @@ class XMLHandler {
       var obj = undefined;
       var elementAttributes = null;
 
+      // quang's
+      var elementQName = QName.parse(nsName);
+      elementQName.nsURI = nsContext.getNamespaceURI(elementQName.prefix);
+      var nextDescriptor =
+        descriptor && descriptor.findElement(elementQName.name);
+      // quang's
+
       // Register namespaces 1st
       for (let a in attrs) {
         if (/^xmlns:|^xmlns$/.test(a)) {
@@ -598,7 +608,11 @@ class XMLHandler {
         }
         let attrName = qname.name;
         elementAttributes = elementAttributes || {};
-        let attrDescriptor = descriptor && descriptor.findAttribute(qname.name);
+        //let attrDescriptor = descriptor && descriptor.findAttribute(qname.name);
+        // quang's
+        let attrDescriptor =
+          nextDescriptor && nextDescriptor.findAttribute(qname.name);
+        // quang's
         let attrValue = parseValue(attrs[a], attrDescriptor);
         // if element attribute is xsi:type add $xsiType field
         if (isXsiType) {
@@ -608,7 +622,8 @@ class XMLHandler {
           xsiType.xmlns = xsiXmlns;
           elementAttributes[options.xsiTypeKey] = xsiType;
         } else {
-          elementAttributes[attrName] = attrs[a];
+          // quang's
+          elementAttributes[attrName] = attrValue; // attrs[a];
         }
       }
 
@@ -617,8 +632,8 @@ class XMLHandler {
         obj[self.options.attributesKey] = elementAttributes;
       }
 
-      var elementQName = QName.parse(nsName);
-      elementQName.nsURI = nsContext.getNamespaceURI(elementQName.prefix);
+      //var elementQName = QName.parse(nsName);
+      //elementQName.nsURI = nsContext.getNamespaceURI(elementQName.prefix);
 
       // SOAP href (#id)
       if (attrs.href != null) {
@@ -639,7 +654,8 @@ class XMLHandler {
       stack.push({
         name: elementQName.name,
         object: obj,
-        descriptor: descriptor && descriptor.findElement(elementQName.name),
+        // quang's
+        descriptor: nextDescriptor, // descriptor && descriptor.findElement(elementQName.name),
         id: attrs.id,
       });
     };
@@ -847,6 +863,12 @@ function parseValue(text, descriptor) {
   if (typeof text !== 'string') return text;
   var value = text;
   var jsType = descriptor && descriptor.jsType;
+  // quang's
+  if (!jsType && descriptor) {
+    var type = xsd.getBuiltinType(descriptor.type.name);
+    if (type) jsType = type.jsType;
+  }
+  // quang's
   if (jsType === Date) {
     var dateText = text;
     // Checks for xs:date with tz, drops the tz 
@@ -854,6 +876,8 @@ function parseValue(text, descriptor) {
     // and JS Date object doesn't store an arbitrary tz
     if(dateText.length === 16){
       dateText = text.substr(0, 10);
+    } else if (date.length == 11) {
+      value = dateFns.parse(date, "dd-MM'T'HH:mm", new Date())
     }
     value = new Date(dateText);
   } else if (jsType === Boolean) {
