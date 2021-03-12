@@ -876,10 +876,11 @@ function parseValue(text, descriptor) {
     // Checks for xs:date with tz, drops the tz 
     // because xs:date doesn't have a time to offset
     // and JS Date object doesn't store an arbitrary tz
+    if (dateText.length == 11) {
+      return dateFns.parse(dateText, "dd-MM'T'HH:mm", new Date())
+    }
     if(dateText.length === 16){
       dateText = text.substr(0, 10);
-    } else if (date.length == 11) {
-      value = dateFns.parse(date, "dd-MM'T'HH:mm", new Date())
     }
     value = new Date(dateText);
   } else if (jsType === Boolean) {
