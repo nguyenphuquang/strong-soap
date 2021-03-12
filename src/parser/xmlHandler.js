@@ -877,7 +877,8 @@ function parseValue(text, descriptor) {
     // because xs:date doesn't have a time to offset
     // and JS Date object doesn't store an arbitrary tz
     if (dateText.length == 11) {
-      return dateFns.parse(dateText, "dd-MM'T'HH:mm", new Date())
+      const d = dateFns.parse(dateText, "dd-MM'T'HH:mm", new Date());
+      return dateFns.addMinutes(d, d.getTimezoneOffset());
     }
     if(dateText.length === 16){
       dateText = text.substr(0, 10);
