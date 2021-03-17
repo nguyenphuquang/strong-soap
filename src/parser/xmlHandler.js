@@ -911,6 +911,7 @@ function toXmlTime(date) {
 function toXmlDateTime(date) {
   date = new Date(date);
   var isoStr = date.toISOString();
+  isoStr = isoStr.substring(0, isoStr.length-8);
   return isoStr;
 }
 
