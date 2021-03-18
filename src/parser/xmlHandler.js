@@ -866,7 +866,7 @@ function parseValue(text, descriptor) {
   var value = text;
   var jsType = descriptor && descriptor.jsType;
   // quang's
-  if (!jsType && descriptor) {
+  if (!jsType && descriptor && descriptor.type) {
     var type = xsd.getBuiltinType(descriptor.type.name);
     if (type) jsType = type.jsType;
   }
