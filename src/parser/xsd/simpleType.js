@@ -52,8 +52,10 @@ class SimpleType extends XSDElement {
       this.union.postProcess(definitions);
       if (this.union.memberTypes) {
         this.union.memberTypes.forEach(function(t) {
-          t.postProcess(definitions);
-          memberTypes.push(t.type);
+          if (t) {
+            t.postProcess(definitions);
+            memberTypes.push(t.type);
+          }
         });
         this.type = memberTypes;
       }
