@@ -917,6 +917,7 @@ function toXmlDateTime(date) {
 
 function toXmlDateOrTime(descriptor, val) {
   if (!descriptor || !descriptor.type || val === null) return val;
+  if (typeof val === 'string') return val
   if (descriptor.type.name === 'date') {
     val = toXmlDate(val);
   } else if (descriptor.type.name === 'time') {
