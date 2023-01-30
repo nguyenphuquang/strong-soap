@@ -46,7 +46,7 @@ class HttpClient {
     var headers = {
       'User-Agent': 'strong-soap/' + VERSION,
       'Accept': 'text/html,application/xhtml+xml,application/xml,text/xml;q=0.9,*/*;q=0.8',
-      'Accept-Encoding': 'none',
+      'Accept-Encoding': 'gzip',
       'Accept-Charset': 'utf-8',
       'Connection': 'close',
       'Host': host + (isNaN(port) ? '' : ':' + port)
